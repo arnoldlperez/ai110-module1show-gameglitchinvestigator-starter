@@ -58,32 +58,37 @@ st.subheader("Make a guess")
 info_box = st.empty()
 
 
+# FIX: Debug Info was drawn before the guess was handled, so it showed the previous
+# turn's attempts and history. Claude Code made it a placeholder filled in afterwards
+debug_box = st.empty()
+
+
 def show_attempts_left():
     # FIX: The banner always said "between 1 and 100"; it now uses the difficulty's range
     info_box.info(
         f"Guess a number between {low} and {high}. "
         f"Attempts left: {attempt_limit - st.session_state.attempts}"
     )
+    with debug_box.container():
+        with st.expander("Developer Debug Info"):
+            st.write("Secret:", st.session_state.secret)
+            st.write("Attempts:", st.session_state.attempts)
+            st.write("Score:", st.session_state.score)
+            st.write("Difficulty:", difficulty)
+            st.write("History:", st.session_state.history)
 
 
-with st.expander("Developer Debug Info"):
-    st.write("Secret:", st.session_state.secret)
-    st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.score)
-    st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
+# FIX: Buttons seemed to miss the first click. The text box only applied its value on
+# Enter or click-away, which reran the page without submitting. Claude Code put the
+# input in a form so Enter and "Submit Guess" both submit the guess in one step
+with st.form("guess_form", clear_on_submit=True):
+    raw_guess = st.text_input("Enter your guess:")
+    submit = st.form_submit_button("Submit Guess 🚀")
 
-raw_guess = st.text_input(
-    "Enter your guess:",
-    key=f"guess_input_{difficulty}"
-)
-
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 with col1:
-    submit = st.button("Submit Guess 🚀")
-with col2:
     new_game = st.button("New Game 🔁")
-with col3:
+with col2:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
