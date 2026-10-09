@@ -47,6 +47,8 @@ I counted a bug as fixed only when a pytest test covering it passed and the game
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
+Every time you click a button or change an input, Streamlit runs the whole script again from top to bottom. That's a "rerun." Normal variables start over on each rerun, so anything the game needs to remember, like the secret number, attempts, and score, has to be stored in `st.session_state`, which survives reruns. Reruns also explain some of the bugs: the banner and Debug Info were drawn before the guess was handled, so they showed the previous turn, and pressing Enter in the text box caused a rerun without submitting the guess. Putting the input in a form and filling the banner in after the guess fixed that.
+
 ---
 
 ## 5. Looking ahead: your developer habits
@@ -55,3 +57,5 @@ I counted a bug as fixed only when a pytest test covering it passed and the game
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+One habit I want to keep is marking the "crime scene" with a `# FIXME` comment and writing a small pytest test for each fix, because it kept the AI focused on one problem and gave me proof the bug was actually gone. Next time, I would play the app myself earlier instead of relying only on the AI's automated checks, since the button lag only showed up when I actually played the game, and the AI's first live check looked like a full fix when it only worked by coincidence. This project showed me that AI-generated code can look finished and still be full of bugs, so I treat it as a draft I need to test and verify, not as working code.
